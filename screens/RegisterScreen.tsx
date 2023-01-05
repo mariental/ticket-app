@@ -1,37 +1,37 @@
 import { SafeAreaView, TextInput, StyleSheet, Text, Button, Alert } from 'react-native';
 import React from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import auth from "../firebaseConfig";
 
-export default function LoginScreen({ navigation }: any) {
+export default function RegisterScreen({ navigation }: any) {
 
     const [email, onChangeEmail] = React.useState<string>('');
     const [password, onChangePassword] = React.useState<string>('');
-    const [error, setError] = React.useState<string>('')
+    const [error, setError] = React.useState<string>('');
 
     const handleSubmit = async (e: any): Promise<void> => {
         e.preventDefault();
-        await signInWithEmailAndPassword(auth, email, password)
+        await createUserWithEmailAndPassword(auth, email, password)
             .then(() => {
                 navigation.navigate('Home');
             })
             .catch(error => {
+                if (error.code === 'auth/email-already-in-use') {
+                    console.log('That email address is already in use!');
+                    setError('That email address is already in use!');
+                }
                 if (error.code === 'auth/invalid-email') {
                     console.log('That email address is invalid!');
                     setError('That email address is invalid!');
                 }
-                if (error.code === '@error auth/wrong-password' ) {
-                    console.log('Wrong credentials!');
-                    setError('Wrong credentials!');
-                }
                 console.error(error);
                 setError(error.message);
-            });
+            })
     }
 
     return (
         <SafeAreaView style={styles.container}>
-            <Text style={styles.titleText}>Login to your account</Text>
+            <Text style={styles.titleText}>Register new account</Text>
             <Text style={styles.label}>Email</Text>
             <TextInput
                 style={styles.input}
