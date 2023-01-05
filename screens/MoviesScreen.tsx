@@ -6,16 +6,19 @@ import Movie from "../components/Movie";
 
 const moviesRef = collection(db, 'movie');
 
-type Movie = {
+export type Movie = {
     id?: string;
-    age_limit: string;
+    title: string;
+    image: string;
+    premiere: string;
+    cast: string;
+    synopsis: string;
     director: string;
     duration: string;
     genre: string;
-    image: string;
+    age_limit: string;
     language: string;
     production: string;
-    title: string;
 }
 
 export default function MoviesScreen({ navigation }: any) {
@@ -41,7 +44,7 @@ export default function MoviesScreen({ navigation }: any) {
         <View>
             <FlatList
                 data={movies}
-                renderItem={({item}) => <Movie title={item.title} image={item.image}/>}
+                renderItem={({item}) => <Movie title={item.title} image={item.image} navigation={navigation}/>}
                 keyExtractor={(item: Movie) => item.id}
             />
         </View>

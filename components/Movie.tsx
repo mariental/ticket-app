@@ -4,6 +4,7 @@ import React from "react";
 export type Props = {
     title: string;
     image: string;
+    navigation: any;
 };
 
 export default function Movie(props: Props) {
@@ -13,9 +14,10 @@ export default function Movie(props: Props) {
             <Image style={{
                 height: 300,
                 width: 200
-            }} source={require('../assets/avatar.png')}/>
+            }} source={{uri: props.image}}/>
             <Button
                 title="Details"
+                onPress={() => props.navigation.navigate('Details')}
             />
         </View>
     );

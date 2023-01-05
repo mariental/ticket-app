@@ -4,6 +4,7 @@ import HomeScreen  from './screens/HomeScreen';
 import LoginScreen  from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import MoviesScreen from './screens/MoviesScreen';
+import MovieDetailsScreen from "./screens/MovieDetailsScreen";
 
 export default function App() {
 
@@ -15,7 +16,8 @@ export default function App() {
           <Drawer.Screen name="Home" component={HomeScreen} />
           <Drawer.Screen name="Login" component={LoginScreen} />
           <Drawer.Screen name="Register" component={RegisterScreen} />
-            <Drawer.Screen name="Movies" component={MoviesScreen} />
+          <Drawer.Screen name="Movies" component={MoviesScreen} />
+          <Drawer.Screen name="Details" component={MovieDetailsScreen} />
         </Drawer.Navigator>
     </NavigationContainer>
   );
