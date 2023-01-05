@@ -1,7 +1,7 @@
 import { SafeAreaView, TextInput, StyleSheet, Text, Button, Alert } from 'react-native';
 import React from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import auth from "../firebaseConfig";
+import { auth } from "../firebaseConfig";
 
 export default function LoginScreen({ navigation }: any) {
 

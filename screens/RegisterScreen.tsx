@@ -1,10 +1,12 @@
 import { SafeAreaView, TextInput, StyleSheet, Text, Button, Alert } from 'react-native';
 import React from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import auth from "../firebaseConfig";
+import { auth, db } from "../firebaseConfig";
+import { ref, set } from "firebase/database";
 
 export default function RegisterScreen({ navigation }: any) {
 
+    const [login, onChangeLogin] = React.useState<string>('');
     const [email, onChangeEmail] = React.useState<string>('');
     const [password, onChangePassword] = React.useState<string>('');
     const [error, setError] = React.useState<string>('');
@@ -32,6 +34,12 @@ export default function RegisterScreen({ navigation }: any) {
     return (
         <SafeAreaView style={styles.container}>
             <Text style={styles.titleText}>Register new account</Text>
+            <Text style={styles.label}>Login</Text>
+            <TextInput
+                style={styles.input}
+                onChangeText={onChangeLogin}
+                value={login}
+            />
             <Text style={styles.label}>Email</Text>
             <TextInput
                 style={styles.input}

@@ -1,7 +1,7 @@
 import { Button, Text, View } from 'react-native';
 import { signOut, onAuthStateChanged, User } from "firebase/auth";
 import React from "react";
-import auth from "../firebaseConfig";
+import { auth } from "../firebaseConfig";
 
 export default function HomeScreen({ navigation }: any) {
 
