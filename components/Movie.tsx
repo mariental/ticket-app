@@ -1,5 +1,6 @@
-import { Button, Text, View, Image } from 'react-native';
+import { View, Image, StyleSheet } from 'react-native';
 import React from "react";
+import { Button, Text, Card } from 'react-native-paper';
 
 export type Props = {
     id: string;
@@ -10,18 +11,30 @@ export type Props = {
 
 export default function Movie(props: Props) {
     return (
-        <View>
-            <Text>{props.title}</Text>
-            <Image style={{
-                height: 300,
-                width: 200
-            }} source={{uri: props.image}}/>
-            <Button
-                title="Details"
-                onPress={() => props.navigation.navigate('Details', { id: props.id})}
-            />
-        </View>
+        <Card style={styles.card}>
+            <Card.Content>
+                <Card.Cover style={styles.cover} source={{ uri: props.image }} />
+                <Text style={styles.title} variant="titleLarge">{props.title}</Text>
+                <Button
+                    mode="elevated"
+                    onPress={() => props.navigation.navigate('Details', { id: props.id})}
+                >Details</Button>
+            </Card.Content>
+        </Card>
     );
 }
+const styles = StyleSheet.create({
+    card: {
+        margin: 10,
+        width: 300
+    },
+    title: {
+        textAlign: "center",
+        margin: 10
+    },
+    cover: {
+        height: 350
+    }
+});
 
 

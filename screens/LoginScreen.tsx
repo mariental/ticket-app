@@ -1,5 +1,6 @@
-import { SafeAreaView, TextInput, StyleSheet, Text, Button, Alert } from 'react-native';
 import React from "react";
+import { SafeAreaView, StyleSheet } from 'react-native';
+import { Button, TextInput, Text } from 'react-native-paper';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebaseConfig";
 
@@ -9,10 +10,11 @@ export default function LoginScreen({ navigation }: any) {
     const [password, onChangePassword] = React.useState<string>('');
     const [error, setError] = React.useState<string>('')
 
-    const handleSubmit = async (e: any): Promise<void> => {
-        e.preventDefault();
+    const handleSubmit = async (): Promise<void> => {
         await signInWithEmailAndPassword(auth, email, password)
             .then(() => {
+                onChangeEmail('');
+                onChangePassword('');
                 navigation.navigate('Home');
             })
             .catch(error => {
@@ -31,53 +33,41 @@ export default function LoginScreen({ navigation }: any) {
 
     return (
         <SafeAreaView style={styles.container}>
-            <Text style={styles.titleText}>Login to your account</Text>
-            <Text style={styles.label}>Email</Text>
+            <Text style={{textAlign: "center"}} variant="headlineSmall">Login to your account</Text>
             <TextInput
                 style={styles.input}
+                label="Email"
+                mode="outlined"
                 onChangeText={onChangeEmail}
                 value={email}
             />
-            <Text style={styles.label}>Password</Text>
             <TextInput
                 style={styles.input}
+                label="Password"
+                mode="outlined"
                 secureTextEntry={true}
                 onChangeText={onChangePassword}
                 value={password}
             />
             <Button
-                title="submit"
-                color="#f194ff"
-                onPress={handleSubmit}
-            />
-            {error !== '' ? <Text style={styles.errorText}>{error !== ""}</Text>: null}
+                style={{marginTop: 20}}
+                mode="elevated"
+                onPress={handleSubmit}>
+                Log in
+            </Button>
+            {error !== '' ? <Text>{error !== ""}</Text>: null}
         </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        display: "flex",
-        margin: 20
-    },
-    label: {
-        marginLeft: 10,
-        marginTop: 10
+        flex: 1,
+        padding: 20,
     },
     input: {
-        height: 40,
-        margin: 12,
-        borderWidth: 1,
-        padding: 10,
-    },
-    titleText: {
-        textAlign: "center",
-        fontSize: 30
-    },
-    errorText: {
-        color: "red"
+        marginTop: 10
     }
 });
-
 
 

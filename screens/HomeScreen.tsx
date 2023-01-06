@@ -1,7 +1,8 @@
-import { Button, Text, View } from 'react-native';
+import {Button, StyleSheet, Text, View} from 'react-native';
 import { signOut, onAuthStateChanged, User } from "firebase/auth";
 import React from "react";
 import { auth } from "../firebaseConfig";
+import ProfileScreen from "./ProfileScreen";
 
 export default function HomeScreen({ navigation }: any) {
 
@@ -17,17 +18,6 @@ export default function HomeScreen({ navigation }: any) {
         })
     }, []);
 
-    const handleSubmit = async (e: any): Promise<void> => {
-        e.preventDefault();
-        signOut(auth)
-            .then(() => {
-                console.log('User signed out!');
-                navigation.navigate('Login');
-            })
-            .catch(error => {
-                console.log(error);
-            })
-    }
 
     if (!user) {
         return (
@@ -38,15 +28,16 @@ export default function HomeScreen({ navigation }: any) {
     }
 
     return (
-        <View>
-            <Text>Welcome {user.email}</Text>
-            <Button
-                title="logout"
-                color="#f194ff"
-                onPress={handleSubmit}
-            />
+        <View style={styles.container}>
+            <ProfileScreen/>
         </View>
     );
 }
 
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        padding: 20,
+    }
+});
 
