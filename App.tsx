@@ -5,20 +5,34 @@ import LoginScreen  from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import MoviesScreen from './screens/MoviesScreen';
 import MovieDetailsScreen from "./screens/MovieDetailsScreen";
+import {createNativeStackNavigator} from "@react-navigation/native-stack";
+
+const Drawer = createDrawerNavigator();
+const Stack = createNativeStackNavigator();
+
+function Root() {
+    return (
+        <Drawer.Navigator initialRouteName="Home">
+            <Drawer.Screen name="Home" component={HomeScreen} />
+            <Drawer.Screen name="Login" component={LoginScreen} />
+            <Drawer.Screen name="Register" component={RegisterScreen} />
+            <Drawer.Screen name="Movies" component={MoviesScreen} />
+        </Drawer.Navigator>
+    );
+}
 
 export default function App() {
-
-  const Drawer = createDrawerNavigator();
-
     return (
     <NavigationContainer>
-        <Drawer.Navigator initialRouteName="Home">
-          <Drawer.Screen name="Home" component={HomeScreen} />
-          <Drawer.Screen name="Login" component={LoginScreen} />
-          <Drawer.Screen name="Register" component={RegisterScreen} />
-          <Drawer.Screen name="Movies" component={MoviesScreen} />
-          <Drawer.Screen name="Details" component={MovieDetailsScreen} />
-        </Drawer.Navigator>
+        <Stack.Navigator>
+            <Stack.Screen
+                name="Root"
+                component={Root}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen name="Movies" component={MoviesScreen} />
+            <Stack.Screen name="Details" component={MovieDetailsScreen} />
+        </Stack.Navigator>
     </NavigationContainer>
   );
 }
