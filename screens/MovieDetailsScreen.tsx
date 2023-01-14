@@ -5,7 +5,6 @@ import { db } from '../firebaseConfig';
 import { doc, getDoc } from "firebase/firestore";
 import { Movie } from "./MoviesScreen";
 
-
 export default function MovieDetailsScreen({ route, navigation }: any) {
 
     const [movie, setMovie] = React.useState<Movie | null>(null)
@@ -38,7 +37,7 @@ export default function MovieDetailsScreen({ route, navigation }: any) {
                 icon="plus"
                 label="Get Reservation"
                 style={styles.fab}
-                onPress={() => console.log('Pressed')}
+                onPress={() => navigation.navigate('Reservation', { movieId: id})}
             />
         </SafeAreaView>
     );
