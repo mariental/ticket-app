@@ -4,27 +4,13 @@ import React from "react";
 import { db } from '../firebaseConfig';
 import { collection, getDocs, DocumentData } from "firebase/firestore";
 import Movie from "../components/Movie";
+import {MovieType} from "../types";
 
 const moviesRef = collection(db, 'movie');
 
-export type Movie = {
-    id: string;
-    title: string;
-    image: string;
-    premiere: string;
-    cast: string;
-    synopsis: string;
-    director: string;
-    duration: string;
-    genre: string;
-    age_limit: string;
-    language: string;
-    production: string;
-}
-
 export default function MoviesScreen({ navigation }: any) {
 
-    const [movies, setMovies] = React.useState<Array<Movie>>([])
+    const [movies, setMovies] = React.useState<Array<MovieType>>([])
     const [searchQuery, setSearchQuery] = React.useState<string>('');
 
     const onChangeSearch = (query: string) => setSearchQuery(query);
@@ -36,7 +22,7 @@ export default function MoviesScreen({ navigation }: any) {
             docSnap.forEach(doc => {
                 moviesFromDb.push({id: doc.id, ...doc.data()});
             })
-            return moviesFromDb as Array<Movie>
+            return moviesFromDb as Array<MovieType>
         }
 
         fetchData().then((moviesFromDb) => {
@@ -54,8 +40,9 @@ export default function MoviesScreen({ navigation }: any) {
             <FlatList
                 style={styles.list}
                 data={movies}
+                listKey="moviesList"
                 renderItem={({item}) => <Movie id={item.id} title={item.title} image={item.image} navigation={navigation}/>}
-                keyExtractor={(item: Movie) => item.id}
+                keyExtractor={(item: MovieType) => item.id}
             />
         </View>
     );

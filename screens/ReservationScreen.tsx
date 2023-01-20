@@ -1,88 +1,90 @@
 import {View, Image, StyleSheet, ScrollView, StatusBar, FlatList} from 'react-native';
+import {Button, TextInput, Text, FAB, Snackbar} from 'react-native-paper';
 import React from "react";
-import {collection, doc, DocumentReference, getDocs, orderBy, query, where} from "firebase/firestore";
-import {db} from "../firebaseConfig";
-import CinemaHall, {SeatType} from "../components/CinemaHall";
 import Seat from "../components/Seat";
-import {Chip, Text} from "react-native-paper";
+import {collection, doc, getDoc, getDocs, query, where} from "firebase/firestore";
+import {MovieType, SeanceType, SeatType} from "../types";
+import {db} from "../firebaseConfig";
+import DropDownPicker from 'react-native-dropdown-picker';
 
-export type SeanceType= {
+export type TicketType = {
     id: string;
-    time: string;
-    date: string;
-    movie: DocumentReference;
-    hall: DocumentReference;
+    type: string;
+    price: number;
 }
 
 export default function ReservationScreen({ route, navigation }: any) {
 
-    const showTimes = ['8.00', '12.00','16.00','20.00']
-    const showDates = ['16.01','17.01']
+    const { seanceId } = route.params;
 
-    const [seances, setSeances] = React.useState<Array<SeanceType>>([])
-    const [time, setTime] = React.useState<string>('8.00')
-    const [date, setDate] = React.useState<string>('16.01')
-    const [selectedSeance, setSelectedSeance] = React.useState<SeanceType>()
+    const [normalTicketNumber, setNormalTicketNumber] = React.useState<number>(1)
+    const [reducedTicketNumber, setReducedTicketNumber] = React.useState<number>(1)
 
-    const { movieId } = route.params;
+    const [open1, setOpen1] = React.useState(false);
+    const [open2, setOpen2] = React.useState(false);
+    const [numbers, setNumbers] = React.useState([
+        {label: '1', value: 1},
+        {label: '2', value: 2},
+        {label: '3', value: 3},
+        {label: '4', value: 4}]
+    );
 
-    React.useEffect(() => {
-        const fetchData = async () => {
-            const seancesFromDb: Array<any> = [];
-            const movieRef = doc(db, 'movie', movieId);
-            const seanceRef = collection(db, 'seance');
-            const q = query(seanceRef, where("movie", "==", movieRef));
-            const docSnap = await getDocs(q);
-            docSnap.forEach(doc => {
-                seancesFromDb.push({id: doc.id, ...doc.data()});
-            })
-            return seancesFromDb as Array<SeanceType>
-        }
-
-        fetchData().then((seancesFromDb) => {
-            setSeances(seancesFromDb);
-            const seance = seances.find(item => item.time === time && item.date === date)
-            setSelectedSeance(seance)
-        })
-    }, [])
-
-    React.useEffect(() => {
-        handleChange()
-    }, [time, date])
-
-    const isSelectedTime = (chipTime: string) => {
-        return chipTime === time
-    }
-    const isSelectedDate = (chipTime: string) => {
-        return chipTime === date
-    }
-
-    const handleChange = () => {
-        const seance = seances.find(item => item.time === time && item.date === date)
-        setSelectedSeance(seance)
-    }
 
     return (
-        <View>
-            <FlatList
-                contentContainerStyle= {{ flexGrow: 1, alignItems: 'center', padding: 10 } }
-                numColumns={5}
-                data={showDates}
-                renderItem={({item}) => <Chip style={styles.chip} selected={isSelectedDate(item)} onPress={() => setDate(item)}>{item}</Chip>}
+        <View style={{ flex: 1, padding: 10}}>
+            <Text style={{textAlign: "center"}} variant={"headlineLarge"}>Black Panther: Wakanda Forever</Text>
+            <Text style={{textAlign: "center", marginVertical: 20}} variant={"bodyLarge"}>Choose tickets number</Text>
+            <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-around", marginVertical: 20}}>
+                <Text variant={"titleMedium"}>normal</Text>
+                <DropDownPicker
+                    containerStyle={{ width: 120}}
+                    open={open1}
+                    value={normalTicketNumber}
+                    items={numbers}
+                    setOpen={setOpen1}
+                    setValue={setNormalTicketNumber}
+                    setItems={setNumbers}
+                    zIndex={3000}
+                    zIndexInverse={1000}
+                />
+            </View>
+            <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-around", marginVertical: 20}}>
+                <Text variant={"titleMedium"}>reduced</Text>
+                <DropDownPicker
+                    containerStyle={{ width: 120}}
+                    open={open2}
+                    value={reducedTicketNumber}
+                    items={numbers}
+                    setOpen={setOpen2}
+                    setValue={setReducedTicketNumber}
+                    setItems={setNumbers}
+                    zIndex={2000}
+                    zIndexInverse={2000}
+                />
+            </View>
+            <FAB
+                icon="send"
+                label="Select seats"
+                style={styles.fab}
+                onPress={() => navigation.navigate('CinemaHall', { seanceId: seanceId })}
             />
-            <FlatList
-                contentContainerStyle= {{ flexGrow: 1, alignItems: 'center', padding: 10 } }
-                numColumns={5}
-                data={showTimes}
-                renderItem={({item}) => <Chip style={styles.chip} selected={isSelectedTime(item)} onPress={() => setTime(item)}>{item}</Chip>}
-            />
-            {selectedSeance !== undefined ? <CinemaHall seanceId={selectedSeance.id}/> : <Text>Please select seance</Text>}
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    chip: {
-        marginHorizontal:10
+    container: {
+        flex: 1,
+        padding: 10,
+        alignItems: "center"
+    },
+    list: {
+        marginTop: 10,
+    },
+    fab: {
+        position: 'absolute',
+        margin: 16,
+        right: 0,
+        bottom: 0,
     }
 });

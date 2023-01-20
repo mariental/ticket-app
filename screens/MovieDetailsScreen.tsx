@@ -3,11 +3,11 @@ import { Button, TextInput, Text, FAB } from 'react-native-paper';
 import React from "react";
 import { db } from '../firebaseConfig';
 import { doc, getDoc } from "firebase/firestore";
-import { Movie } from "./MoviesScreen";
+import { MovieType } from "../types";
 
 export default function MovieDetailsScreen({ route, navigation }: any) {
 
-    const [movie, setMovie] = React.useState<Movie | null>(null)
+    const [movie, setMovie] = React.useState<MovieType>()
 
     const { id } = route.params;
 
@@ -15,7 +15,7 @@ export default function MovieDetailsScreen({ route, navigation }: any) {
         const fetchData = async () => {
             const docRef = doc(db, 'movie', id);
             const docSnap = await getDoc(docRef);
-            return docSnap.data() as Movie
+            return docSnap.data() as MovieType
         }
 
         fetchData().then((movieFromDb) => {

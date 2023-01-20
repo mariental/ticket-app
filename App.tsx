@@ -10,7 +10,10 @@ import { Provider as PaperProvider } from 'react-native-paper';
 import React from "react";
 import {onAuthStateChanged, User} from "firebase/auth";
 import {auth} from "./firebaseConfig";
+import RepertoireScreen from "./screens/RepertoireScreen";
+import CinemaHallScreen from "./screens/CinemaHall";
 import ReservationScreen from "./screens/ReservationScreen";
+import OrderScreen from "./screens/OrderScreen";
 
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
@@ -37,7 +40,7 @@ function Root() {
                     <Drawer.Screen name="Register" component={RegisterScreen} />
                 </> :
                 <></>}
-            <Stack.Screen name="Movies" component={MoviesScreen} />
+            <Stack.Screen name="Repertoire" component={RepertoireScreen} />
         </Drawer.Navigator>
     );
 }
@@ -52,8 +55,9 @@ export default function App() {
                         component={Root}
                         options={{ headerShown: false }}
                     />
+                    <Stack.Screen name="CinemaHall" component={CinemaHallScreen} />
                     <Stack.Screen name="Reservation" component={ReservationScreen} />
-                    <Stack.Screen name="Details" component={MovieDetailsScreen} />
+                    <Stack.Screen name="Order" component={OrderScreen} />
                 </Stack.Navigator>
             </NavigationContainer>
         </PaperProvider>

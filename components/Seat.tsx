@@ -1,9 +1,7 @@
 import {View, Image, StyleSheet } from 'react-native';
 import React from "react";
 import Checkbox from "react-native-bouncy-checkbox";
-import {SeatType} from "./CinemaHall";
 import firebase from "firebase/compat";
-import functions = firebase.functions;
 
 export type propsType = {
     available: boolean;
@@ -16,7 +14,7 @@ export default function Seat({available, setSelectedSeats, itemId}: propsType) {
     const [checked, setChecked] = React.useState<boolean>(false);
 
     const handleCheck = () =>{
-        setChecked(!checked);
+        setChecked(!checked)
         setSelectedSeats(itemId)
     }
 
