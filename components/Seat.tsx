@@ -2,20 +2,40 @@ import {View, Image, StyleSheet } from 'react-native';
 import React from "react";
 import Checkbox from "react-native-bouncy-checkbox";
 import firebase from "firebase/compat";
+import {useTheme} from "react-native-paper";
+import {SeanceSeatType} from "../types";
+import {useAppSelector} from "../hooks";
 
 export type propsType = {
     available: boolean;
     setSelectedSeats: Function;
-    itemId: string;
+    item: SeanceSeatType;
+    quantity: number;
+    showDialog: Function
 }
 
-export default function Seat({available, setSelectedSeats, itemId}: propsType) {
+export default function Seat({available, setSelectedSeats, item, quantity, showDialog}: propsType) {
+
+    const theme = useTheme()
 
     const [checked, setChecked] = React.useState<boolean>(false);
+    const normalTickets = useAppSelector(state => state.booking.normalTickets)
+    const reducedTickets = useAppSelector(state => state.booking.reducedTickets)
 
     const handleCheck = () =>{
-        setChecked(!checked)
-        setSelectedSeats(itemId)
+        if(checked){
+            setChecked(!checked)
+            setSelectedSeats(item)
+        }
+        if(!checked){
+            if((normalTickets + reducedTickets) === quantity){
+                showDialog()
+            }
+            else {
+                setChecked(!checked)
+                setSelectedSeats(item)
+            }
+        }
     }
 
     return (
@@ -28,8 +48,8 @@ export default function Seat({available, setSelectedSeats, itemId}: propsType) {
                     style={styles.seat}
                     innerIconStyle={{ borderWidth: 2, borderRadius: 0}}
                     iconStyle={{borderRadius: 0}}
-                    fillColor="rgb(39, 22, 36)"
-                    unfillColor="rgb(238, 222, 231)"
+                    fillColor={theme.colors.primaryContainer}
+                    unfillColor={theme.colors.primary}
                     size={30}
                 /> :
                 <Checkbox
@@ -40,8 +60,8 @@ export default function Seat({available, setSelectedSeats, itemId}: propsType) {
                     style={styles.seat}
                     innerIconStyle={{ borderWidth: 2, borderRadius: 0}}
                     iconStyle={{borderRadius: 0}}
-                    fillColor="rgb(39, 22, 36)"
-                    unfillColor="rgb(39, 22, 36)"
+                    fillColor={theme.colors.primaryContainer}
+                    unfillColor={theme.colors.primary}
                     size={30}
                 />
             }
@@ -51,6 +71,6 @@ export default function Seat({available, setSelectedSeats, itemId}: propsType) {
 
 const styles = StyleSheet.create({
     seat: {
-        margin: 3
+        margin: 10,
     }
 });

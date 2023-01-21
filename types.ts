@@ -36,3 +36,25 @@ export type SeatType = {
     row: number;
     number: number;
 }
+
+export type ReviewType = {
+    id: string;
+    user: string;
+    content: string;
+    rate: number;
+    movie: MovieType;
+}
+
+export type SeanceSeatType = {
+    id: string;
+    seance: DocumentReference;
+    seat: DocumentReference;
+    available: boolean;
+}
+
+export type TicketType = {
+    id: string;
+    seance: DocumentReference;
+    price: number;
+    seats: Array<number>;
+}

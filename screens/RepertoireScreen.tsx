@@ -2,13 +2,15 @@ import {View, Image, StyleSheet, ScrollView, StatusBar, FlatList, SectionList, S
 import React, {useEffect} from "react";
 import {collection, doc, DocumentReference, getDocs, orderBy, query, where} from "firebase/firestore";
 import {db} from "../firebaseConfig";
-import {Chip, Text} from "react-native-paper";
+import {Chip, Divider, Text, useTheme} from "react-native-paper";
 import {CinemaType, HallType, MovieType, SeanceType} from "../types";
 import Seances from "../components/Seances";
 import Movie from "../components/Movie";
 
 
 export default function RepertoireScreen({ route, navigation }: any) {
+
+    const theme = useTheme()
 
     const showDates = ['16.01','17.01']
 
@@ -59,31 +61,45 @@ export default function RepertoireScreen({ route, navigation }: any) {
    }
 
     return (
-        <SafeAreaView style={{paddingBottom: 150}}>
-            <FlatList
-                contentContainerStyle= {{ flexGrow: 1, alignItems: 'center', padding: 20 } }
-                numColumns={3}
-                data={cinemas}
-                listKey="cinemasList"
-                renderItem={({item}) => <Chip style={styles.chip} selected={isSelectedCinema(item.id)} onPress={() => setCinema(item.id)}>{item.name}</Chip>}
-                keyExtractor={(item: CinemaType, index) => item.id}
-            />
-            <FlatList
-                contentContainerStyle= {{ flexGrow: 1, alignItems: 'center', padding: 10, marginBottom: 20 } }
-                numColumns={2}
-                data={showDates}
-                listKey="datesList"
-                renderItem={({item}) => <Chip style={styles.chip} selected={isSelectedDate(item)} onPress={() => setDate(item)}>{item}</Chip>}
-                keyExtractor={(item: string, index) => item}
-            />
+        <SafeAreaView style={{paddingBottom: 170, backgroundColor: theme.colors.surface}}>
+            <View>
+                <FlatList
+                    contentContainerStyle= {{ flexGrow: 1, alignItems: 'center', paddingTop: 20 } }
+                    numColumns={2}
+                    data={cinemas}
+                    listKey="cinemasList"
+                    renderItem={({item}) =>
+                        <Chip style={[styles.chip ,{ backgroundColor: theme.colors.tertiaryContainer, marginBottom: 10}]}
+                              textStyle={{color: theme.colors.onTertiaryContainer}}
+                              mode="flat"
+                              selected={isSelectedCinema(item.id)}
+                              onPress={() => setCinema(item.id)}>
+                            {item.name}
+                        </Chip>}
+                    keyExtractor={(item: CinemaType, index) => item.id}
+                />
+                <FlatList
+                    contentContainerStyle= {{ flexGrow: 1, alignItems: 'center', paddingBottom: 20 } }
+                    numColumns={2}
+                    data={showDates}
+                    listKey="datesList"
+                    renderItem={({item}) =>
+                        <Chip style={[styles.chip ,{ backgroundColor: theme.colors.primaryContainer}]}
+                              textStyle={{color: theme.colors.onTertiaryContainer}}
+                              mode="flat"
+                              selected={isSelectedDate(item)}
+                              onPress={() => setDate(item)}>
+                            {item}
+                        </Chip>}
+                    keyExtractor={(item: string, index) => item}
+                />
+            </View>
             <FlatList
                 contentContainerStyle={{paddingHorizontal: 20}}
                 data={movies}
                 listKey="moviesList"
                 renderItem={({item}) => <Seances
-                    movieId={item.id}
-                    movieImage={item.image}
-                    movieTitle={item.title}
+                    movie={item}
                     cinema={cinema}
                     date={date}
                     navigation={navigation}/>}

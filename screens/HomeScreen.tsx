@@ -3,6 +3,7 @@ import { signOut, onAuthStateChanged, User } from "firebase/auth";
 import React from "react";
 import { auth } from "../firebaseConfig";
 import ProfileScreen from "./ProfileScreen";
+import {useAppDispatch} from "../hooks";
 
 export default function HomeScreen({ navigation }: any) {
 

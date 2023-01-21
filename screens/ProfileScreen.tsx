@@ -1,11 +1,14 @@
-import { Text, View, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import React from "react";
 import { auth } from "../firebaseConfig";
 import {signOut, User} from "firebase/auth";
-import {Button, Portal, Modal, TextInput} from 'react-native-paper';
+import {Button, Portal, Modal, TextInput, Text, useTheme} from 'react-native-paper';
 import { deleteUser, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from "firebase/auth";
+import {useAppDispatch} from "../hooks";
 
 export default function ProfileScreen({ navigation }: any) {
+
+    const theme = useTheme()
 
     const [user, setUser] = React.useState<User | null>(null);
     const [oldPassword, onChangeOldPassword] = React.useState<string>('');
@@ -85,11 +88,25 @@ export default function ProfileScreen({ navigation }: any) {
         setContent('delete');
     }
     const hideModal = () => setVisible(false);
-    const containerStyle = {backgroundColor: 'white', padding: 20, margin: 20};
+    const containerStyle = {backgroundColor: theme.colors.background, padding: 50, margin: 20, borderRadius: 30};
 
     return (
-        <View>
-            <Text>{user?.email}</Text>
+        <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
+            <View style={{marginHorizontal: 20, marginTop: 40, padding: 50, backgroundColor: theme.colors.secondaryContainer, borderRadius: 30}}>
+                <Text variant="titleLarge" style={{textAlign: "center", marginBottom: 30}}>Hello {user?.email}</Text>
+                <Button
+                    style={{marginTop: 10}}
+                    mode="elevated"
+                    onPress={showPasswordModal}>Change password</Button>
+                <Button
+                    style={{marginTop: 10}}
+                    mode="elevated"
+                    onPress={showDeleteModal}>Delete account</Button>
+                <Button
+                    style={{marginTop: 10}}
+                    mode="elevated"
+                    onPress={handleLogout}>Logout</Button>
+            </View>
             <Portal>
                 <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
                     {content == 'password' ?
@@ -112,7 +129,7 @@ export default function ProfileScreen({ navigation }: any) {
                         />
                         <Button
                             style={{marginTop: 10}}
-                            mode="elevated"
+                            mode="contained"
                             onPress={handleChangePassword}>Confirm</Button>
                         </> :
                         <>
@@ -126,24 +143,12 @@ export default function ProfileScreen({ navigation }: any) {
                             />
                             <Button
                                 style={{marginTop: 10}}
-                                mode="elevated"
+                                mode="contained"
                                 onPress={handleDeleteAccount}>Confirm</Button>
                         </>
                     }
                 </Modal>
             </Portal>
-            <Button
-                style={{marginTop: 10}}
-                mode="elevated"
-                onPress={showPasswordModal}>Change password</Button>
-            <Button
-                style={{marginTop: 10}}
-                mode="elevated"
-                onPress={showDeleteModal}>Delete account</Button>
-            <Button
-                style={{marginTop: 10}}
-                mode="elevated"
-                onPress={handleLogout}>Logout</Button>
         </View>
     );
 }
