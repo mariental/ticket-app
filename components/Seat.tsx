@@ -46,10 +46,10 @@ export default function Seat({available, setSelectedSeats, item, quantity, showD
                     disableBuiltInState
                     onPress={handleCheck}
                     style={styles.seat}
-                    innerIconStyle={{ borderWidth: 2, borderRadius: 0}}
-                    iconStyle={{borderRadius: 0}}
+                    innerIconStyle={{ borderWidth: 2, borderRadius: 10}}
+                    iconStyle={{borderRadius: 10}}
                     fillColor={theme.colors.primaryContainer}
-                    unfillColor={theme.colors.primary}
+                    unfillColor={theme.colors.onPrimaryContainer}
                     size={30}
                 /> :
                 <Checkbox
@@ -58,10 +58,10 @@ export default function Seat({available, setSelectedSeats, item, quantity, showD
                     disableBuiltInState
                     onPress={handleCheck}
                     style={styles.seat}
-                    innerIconStyle={{ borderWidth: 2, borderRadius: 0}}
-                    iconStyle={{borderRadius: 0}}
+                    innerIconStyle={{ borderWidth: 2, borderRadius: 10}}
+                    iconStyle={{borderRadius: 10}}
                     fillColor={theme.colors.primaryContainer}
-                    unfillColor={theme.colors.primary}
+                    unfillColor={theme.colors.primaryContainer}
                     size={30}
                 />
             }

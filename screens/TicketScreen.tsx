@@ -16,20 +16,21 @@ export default function TicketScreen({ navigation }: any) {
     const theme = useTheme()
 
     React.useEffect(() => {
-        const user = auth.currentUser;
-        const fetchTickets = async () => {
-            const ticketsFromDb: Array<any> = [];
-            const ticketRef = collection(db, 'ticket');
-            const q = query(ticketRef, where("user", "==", user?.email));
-            const docSnap = await getDocs(q);
-            docSnap.forEach(doc => {
-                ticketsFromDb.push({id: doc.id, ...doc.data()});
+        if(auth.currentUser){
+            const fetchTickets = async () => {
+                const ticketsFromDb: Array<any> = [];
+                const ticketRef = collection(db, 'ticket');
+                const q = query(ticketRef, where("user", "==", auth.currentUser?.email));
+                const docSnap = await getDocs(q);
+                docSnap.forEach(doc => {
+                    ticketsFromDb.push({id: doc.id, ...doc.data()});
+                })
+                return ticketsFromDb as Array<TicketType>
+            }
+            fetchTickets().then((ticketsFromDb) => {
+                setTickets(ticketsFromDb);
             })
-            return ticketsFromDb as Array<TicketType>
         }
-        fetchTickets().then((ticketsFromDb) => {
-            setTickets(ticketsFromDb);
-        })
     })
 
     return (

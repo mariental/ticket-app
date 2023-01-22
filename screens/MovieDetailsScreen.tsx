@@ -28,20 +28,20 @@ export default function MovieDetailsScreen({ route, navigation }: any) {
         })
     }, [])
 
-    React.useEffect(() => {
-        const fetchData = async () => {
-            const reviewsFromDb: Array<any> = [];
-            const movieRef = doc(db, 'movie', id)
-            const docRef = collection(db, 'review');
-            const q = query(docRef, where('movie', '==', movieRef));
-            const docSnap = await getDocs(q);
-            docSnap.forEach(doc => {
-                reviewsFromDb.push({id: doc.id, ...doc.data()});
-            })
-            return reviewsFromDb as Array<ReviewType>
-        }
+    const fetchReviews = async () => {
+        const reviewsFromDb: Array<any> = [];
+        const movieRef = doc(db, 'movie', id)
+        const docRef = collection(db, 'review');
+        const q = query(docRef, where('movie', '==', movieRef));
+        const docSnap = await getDocs(q);
+        docSnap.forEach(doc => {
+            reviewsFromDb.push({id: doc.id, ...doc.data()});
+        })
+        return reviewsFromDb as Array<ReviewType>
+    }
 
-        fetchData().then((reviewsFromDb) => {
+    React.useEffect(() => {
+        fetchReviews().then((reviewsFromDb) => {
             setReviews(reviewsFromDb)
         })
     }, [movie])
@@ -50,21 +50,43 @@ export default function MovieDetailsScreen({ route, navigation }: any) {
     const hideModal = () => setVisible(false);
     const containerStyle = {backgroundColor: theme.colors.secondaryContainer, padding: 20, margin: 20, borderRadius: 20};
 
+    const getReviews = () => {
+        fetchReviews().then((reviewsFromDb) => {
+            setReviews(reviewsFromDb)
+        })
+    }
+
+
     return (
-        <SafeAreaView style={{backgroundColor: theme.colors.surface}}>
+        <SafeAreaView style={{backgroundColor: theme.colors.surface, flex: 1}}>
             <ScrollView contentContainerStyle={{ paddingBottom: 70, paddingHorizontal: 10 }}>
                 <View style={styles.container}>
                     <Image style={styles.image} source={{ uri: movie?.image }} />
-                    <Text style={styles.text} variant="titleLarge">{movie?.title}</Text>
-                    <Text style={styles.text} variant="labelSmall">{movie?.production} | {movie?.genre} | {movie?.duration}</Text>
+                    <Text style={styles.title} variant="titleLarge">{movie?.title}</Text>
+                    <Text style={styles.text} variant="labelMedium">{movie?.production} | {movie?.duration}</Text>
+                    <View style={{flexDirection: "row", marginBottom: 10}}>
+                        {movie?.genre.map((genre) =>
+                            <Chip
+                                style={{backgroundColor: theme.colors.tertiaryContainer, marginHorizontal: 10}}
+                                textStyle={{color: theme.colors.onTertiaryContainer}}
+                                mode="flat"
+                                key={genre}
+                            >
+                                {genre}
+                            </Chip>
+                        )}
+                    </View>
                     <Text style={styles.synopsis} variant="labelMedium">{movie?.synopsis}</Text>
-                    <Text style={styles.text} variant="labelSmall">Director: {movie?.director}</Text>
-                    <Text style={styles.text} variant="labelSmall">Cast: {movie?.cast}</Text>
                 </View>
-                <Text style={styles.synopsis} variant={"titleLarge"}>Reviews </Text>
-                {reviews.map((review) =>
-                    <Review review={review} key={review.id}/>
-                )}
+                { reviews.length > 0 ?
+                        <View>
+                            <Text style={styles.synopsis} variant={"titleLarge"}>Reviews</Text>
+                            {reviews.map((review) =>
+                                <Review review={review} key={review.id} getReviews={getReviews}/>
+                            )}
+                        </View>
+                    : null
+                }
             </ScrollView>
             {
                 auth.currentUser ? <FAB
@@ -77,8 +99,7 @@ export default function MovieDetailsScreen({ route, navigation }: any) {
             }
             <Portal>
                 <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
-                    <AddOpinion/>
-                    <Button mode="elevated" style={{marginVertical: 20}} onPress={hideModal}>Add</Button>
+                    {movie !== undefined ? <AddOpinion movie={id} getReviews={getReviews} hideModal={hideModal}/> : null }
                 </Modal>
             </Portal>
 
@@ -102,8 +123,12 @@ const styles = StyleSheet.create({
     text:{
         marginBottom: 10
     },
-    synopsis: {
+    title: {
         marginBottom: 10,
+        textAlign: "center"
+    },
+    synopsis: {
+        margin: 20,
         textAlign: "center"
     },
     container: {

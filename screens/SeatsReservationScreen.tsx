@@ -6,7 +6,7 @@ import {collection, doc, getDoc, getDocs, query, where} from "firebase/firestore
 import {MovieType, SeanceSeatType, SeatType} from "../types";
 import {db} from "../firebaseConfig";
 import {useAppDispatch, useAppSelector} from "../hooks";
-import {setBookedSeats} from "../features/booking/bookingSlice";
+import {setBookedSeats} from "../features/bookingSlice";
 
 
 export default function SeatsReservationScreen({ route, navigation }: any) {
@@ -62,13 +62,19 @@ export default function SeatsReservationScreen({ route, navigation }: any) {
             const fetchData = async (id: string) => {
                 const seatRef = doc(db, 'seat', id);
                 const docSnap = await getDoc(seatRef);
-                return docSnap.data() as SeatType
+                return { id: docSnap.id, ...docSnap.data() } as SeatType
             }
             const saveSeats = async () => {
-                const seatsToSave: Array<number> = []
+                const seatsToSave: Array<{ id: string, number: number }> = []
                 for (const selectedSeat of selectedSeats) {
                     await fetchData(selectedSeat).then((seatFromDb) => {
-                        seatsToSave.push(seatFromDb.number)
+                        const seat = seats.find(item => item.seat.id === selectedSeat)
+                        if(seat){
+                            seatsToSave.push({
+                                id: seat.id,
+                                number: seatFromDb.number
+                            })
+                        }
                     })
                 }
                 return seatsToSave

@@ -60,7 +60,7 @@ export default function Seances(props: PropsType) {
         if(halls && halls.length > 0){
             fetchSeances().then((seancesFromDb) => {
                 if(seancesFromDb) {
-                    setSeances(seancesFromDb)
+                    setSeances(seancesFromDb.sort((a: SeanceType, b: SeanceType) => (Number(a.time) > Number(b.time)) ? 1 : (Number((b.time)) > Number(a.time)) ? -1 : 0))
                 }
             })
         }

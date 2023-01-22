@@ -1,15 +1,19 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import type { RootState } from '../../store'
-import {MovieType, SeanceType, SeatType} from "../../types";
-import {SeanceSeatType} from "../../SeanceSeet";
+import type { RootState } from '../store'
+import {MovieType, SeanceType} from "../types";
+
+interface Seat {
+    id: string;
+    number: number;
+}
 
 interface BookingState {
     movie: MovieType | null;
     seance: Partial<SeanceType> | null;
     normalTickets: number;
     reducedTickets: number;
-    seats: Array<number>;
+    seats: Array<Seat>;
 }
 
 const initialState: BookingState = {
@@ -34,7 +38,7 @@ export const bookingSlice = createSlice({
             state.normalTickets = action.payload.normalTickets
             state.reducedTickets = action.payload.reducedTickets
         },
-        setBookedSeats(state, action: PayloadAction<Array<number>>){
+        setBookedSeats(state, action: PayloadAction<Array<Seat>>){
             state.seats = action.payload
         },
         clearBooking(state){

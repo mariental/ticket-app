@@ -11,9 +11,7 @@ const moviesRef = collection(db, 'movie');
 export default function MoviesScreen({ navigation }: any) {
 
     const [movies, setMovies] = React.useState<Array<MovieType>>([])
-    const [searchQuery, setSearchQuery] = React.useState<string>('');
 
-    const onChangeSearch = (query: string) => setSearchQuery(query);
 
     React.useEffect(() => {
         const fetchData = async () => {
@@ -32,11 +30,6 @@ export default function MoviesScreen({ navigation }: any) {
 
     return (
         <View style={styles.container}>
-            <Searchbar
-                placeholder="Search"
-                onChangeText={onChangeSearch}
-                value={searchQuery}
-            />
             <FlatList
                 style={styles.list}
                 data={movies}

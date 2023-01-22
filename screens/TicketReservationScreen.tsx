@@ -1,13 +1,9 @@
 import {View, Image, StyleSheet, ScrollView, StatusBar, FlatList} from 'react-native';
 import {Button, TextInput, Text, FAB, Snackbar, useTheme, Divider, Portal, Dialog} from 'react-native-paper';
 import React from "react";
-import Seat from "../components/Seat";
-import {collection, doc, getDoc, getDocs, query, where} from "firebase/firestore";
-import {MovieType, SeanceType, SeatType} from "../types";
-import {db} from "../firebaseConfig";
 import DropDownPicker from 'react-native-dropdown-picker';
 import {useAppDispatch, useAppSelector} from "../hooks";
-import {setTickets} from "../features/booking/bookingSlice";
+import {setTickets} from "../features/bookingSlice";
 
 export type TicketType = {
     id: string;
@@ -30,7 +26,10 @@ export default function TicketReservationScreen({ route, navigation }: any) {
     const [numbers, setNumbers] = React.useState([
         {label: '0', value: 0},
         {label: '1', value: 1},
-        {label: '2', value: 2}
+        {label: '2', value: 2},
+        {label: '3', value: 3},
+        {label: '4', value: 4},
+        {label: '5', value: 5},
         ]
     );
     const [visible, setVisible] = React.useState(false);

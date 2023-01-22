@@ -1,6 +1,6 @@
 import React from "react";
 import {Image, SafeAreaView, StyleSheet, View} from 'react-native';
-import { Button, TextInput, Text } from 'react-native-paper';
+import {Button, TextInput, Text, Snackbar} from 'react-native-paper';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebaseConfig";
 import { useTheme } from 'react-native-paper';
@@ -11,29 +11,44 @@ export default function LoginScreen({ navigation }: any) {
     const theme = useTheme()
 
     const [email, onChangeEmail] = React.useState<string>('');
-    const [password, onChangePassword] = React.useState<string>('');
+    const [password, onChangePassword] = React.useState<string>('')
     const [error, setError] = React.useState<string>('')
+    const [visible, setVisible] = React.useState(false)
+
+
+    const onToggleSnackBar = () => setVisible(!visible)
+    const onDismissSnackBar = () => setVisible(false)
+
 
     const handleSubmit = async (): Promise<void> => {
-        await signInWithEmailAndPassword(auth, email, password)
-            .then(() => {
-                onChangeEmail('');
-                onChangePassword('');
-                navigation.navigate('Repertoire');
-            })
-            .catch(error => {
-                if (error.code === 'auth/invalid-email') {
-                    console.log('That email address is invalid!');
-                    setError('That email address is invalid!');
-                }
-                if (error.code === '@error auth/wrong-password' ) {
-                    console.log('Wrong credentials!');
-                    setError('Wrong credentials!');
-                }
-                console.error(error);
-                setError(error.message);
-            });
+        if( email.length === 0 &&  password.length === 0){
+            setError('You must provide credentials!')
+            onToggleSnackBar()
+        }
+        else{
+            await signInWithEmailAndPassword(auth, email, password)
+                .then(() => {
+                    onChangeEmail('');
+                    onChangePassword('');
+                    navigation.navigate('Repertoire');
+                })
+                .catch(error => {
+                    if (error.code === 'auth/invalid-email') {
+                        console.log('That email address is invalid!')
+                        setError('That email address is invalid!')
+                    }
+                    else if (error.code === '@error auth/wrong-password' ) {
+                        console.log('Wrong credentials!');
+                        setError('Wrong credentials!')
+                    }
+                    else {
+                        setError('Wrong credentials!')
+                    }
+                    onToggleSnackBar()
+                });
+        }
     }
+
 
     return (
         <SafeAreaView style={[styles.container ,{ backgroundColor: theme.colors.background}]}>
@@ -60,7 +75,16 @@ export default function LoginScreen({ navigation }: any) {
                     onPress={handleSubmit}>
                     Log in
                 </Button>
-                {error !== '' ? <Text>{error !== ""}</Text>: null}
+            </View>
+            <View style={{flex: 1}}>
+                <Snackbar
+                    visible={visible}
+                    onDismiss={onDismissSnackBar}
+                    wrapperStyle={{}}
+                    style={{backgroundColor: theme.colors.errorContainer}}
+                    duration={1000}>
+                    {error}
+                </Snackbar>
             </View>
         </SafeAreaView>
     );
@@ -69,6 +93,7 @@ export default function LoginScreen({ navigation }: any) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        alignItems: "stretch",
         padding: 20,
     },
     input: {

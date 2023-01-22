@@ -3,7 +3,7 @@ import React from "react";
 import {MovieType, SeanceType} from "../types";
 import {Chip, Text, Button, Dialog, Portal, useTheme} from "react-native-paper"
 import {useAppDispatch} from "../hooks";
-import {setMovie, setSeance} from "../features/booking/bookingSlice";
+import {setMovie, setSeance} from "../features/bookingSlice";
 import {auth} from "../firebaseConfig";
 import {User} from "firebase/auth";
 
@@ -20,7 +20,6 @@ export default function MovieSeance(props: PropsType) {
 
     const [selectedSeance, setSelectedSeance] = React.useState<SeanceType>()
     const [visible, setVisible] = React.useState<boolean>(false);
-    const [user, setUser] = React.useState<User | null>(null)
 
     const dispatch = useAppDispatch()
 
@@ -35,15 +34,11 @@ export default function MovieSeance(props: PropsType) {
 
     const handlePress = (item: SeanceType): void => {
         setSelectedSeance(item)
-        const user = auth.currentUser;
-        if(user){
-            setUser(user)
-        }
         showDialog()
     }
 
     const handleClose = (): void => {
-        if(user){
+        if(auth.currentUser){
             const seance = {
                 id: selectedSeance?.id,
                 time: selectedSeance?.time,
@@ -81,7 +76,7 @@ export default function MovieSeance(props: PropsType) {
             <Portal>
                 <Dialog visible={visible} onDismiss={hideDialog}>
                     <Dialog.Content>
-                        { user !== null ?
+                        { auth.currentUser !== null ?
                             <Text variant="bodyMedium">Do you want to proceed to the booking process?</Text> :
                             <Text variant="bodyMedium">You must be logged in to book a ticket. Do you want to go to the login page?</Text>
                         }
