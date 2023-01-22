@@ -19,6 +19,7 @@ export default {
     assetBundlePatterns: [
       '**/*'
     ],
+    plugins : ["expo-image-picker"],
     ios: {
       supportsTablet: true
     },

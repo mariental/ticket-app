@@ -9,7 +9,7 @@ export type MovieType = {
     synopsis: string;
     director: string;
     duration: string;
-    genre: string;
+    genre: Array<string>;
     age_limit: string;
     language: string;
     production: string;

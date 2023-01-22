@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit'
-import booking from './features/booking/bookingSlice'
+import booking from './features/bookingSlice'
 
 const store = configureStore({
     reducer: {

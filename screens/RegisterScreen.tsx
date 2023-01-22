@@ -1,9 +1,8 @@
 import React from "react";
 import {SafeAreaView, StyleSheet, View} from 'react-native';
-import {Button, TextInput, Text, useTheme} from 'react-native-paper';
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {Button, TextInput, Text, useTheme, Snackbar} from 'react-native-paper';
+import {createUserWithEmailAndPassword, updateProfile} from "firebase/auth";
 import { auth, db } from "../firebaseConfig";
-import { ref, set } from "firebase/database";
 
 export default function RegisterScreen({ navigation }: any) {
 
@@ -13,26 +12,44 @@ export default function RegisterScreen({ navigation }: any) {
     const [email, onChangeEmail] = React.useState<string>('');
     const [password, onChangePassword] = React.useState<string>('');
     const [error, setError] = React.useState<string>('');
+    const [visible, setVisible] = React.useState(false)
+
+    const onToggleSnackBar = () => setVisible(!visible)
+    const onDismissSnackBar = () => setVisible(false)
 
     const handleSubmit = async (): Promise<void> => {
-        await createUserWithEmailAndPassword(auth, email, password)
-            .then(() => {
-                onChangeEmail('');
-                onChangePassword('');
-                navigation.navigate('Repertoire');
-            })
-            .catch(error => {
-                if (error.code === 'auth/email-already-in-use') {
-                    console.log('That email address is already in use!');
-                    setError('That email address is already in use!');
-                }
-                if (error.code === 'auth/invalid-email') {
-                    console.log('That email address is invalid!');
-                    setError('That email address is invalid!');
-                }
-                console.error(error);
-                setError(error.message);
-            })
+        if( email.length === 0 &&  password.length === 0){
+            setError('You must provide credentials!')
+            onToggleSnackBar()
+        }
+        else{
+            await createUserWithEmailAndPassword(auth, email, password)
+                .then(() => {
+                    onChangeEmail('');
+                    onChangePassword('');
+                    if(auth.currentUser !== null){
+                        updateProfile(auth.currentUser, {
+                            displayName: login
+                        }).then(() => {
+                            navigation.navigate('Repertoire');
+                        }).catch((error) => {
+                            console.log(error)
+                        });
+                    }
+                })
+                .catch(error => {
+                    if (error.code === 'auth/email-already-in-use') {
+                        console.log('That email address is already in use!');
+                        setError('That email address is already in use!');
+                    }
+                    else if (error.code === 'auth/invalid-email') {
+                        console.log('That email address is invalid!');
+                        setError('That email address is invalid!');
+                    }
+                    onToggleSnackBar()
+                })
+        }
+
     }
 
     return (
@@ -67,7 +84,16 @@ export default function RegisterScreen({ navigation }: any) {
                     onPress={handleSubmit}>
                     Register
                 </Button>
-                {error !== '' ? <Text>{error !== ""}</Text>: null}
+            </View>
+            <View style={{flex: 1}}>
+                <Snackbar
+                    visible={visible}
+                    onDismiss={onDismissSnackBar}
+                    wrapperStyle={{}}
+                    style={{backgroundColor: theme.colors.errorContainer}}
+                    duration={1000}>
+                    {error}
+                </Snackbar>
             </View>
         </SafeAreaView>
     );

@@ -61,6 +61,16 @@ function Root() {
                             }
                         }}
                     />
+                    <Stack.Screen
+                        name="Repertoire"
+                        component={RepertoireScreen}
+                        options={{
+                            title: 'Repertoire',
+                            headerStyle: {
+                                backgroundColor: 'rgb(26, 28, 30)',
+                            }
+                        }}
+                    />
                 </> :
                 <>
                     <Stack.Screen
@@ -73,27 +83,28 @@ function Root() {
                             }
                         }}
                     />
+                    <Stack.Screen
+                        name="Tickets"
+                        component={TicketScreen}
+                        options={{
+                            title: 'Tickets',
+                            headerStyle: {
+                                backgroundColor: 'rgb(26, 28, 30)',
+                            }
+                        }}
+                    />
+                    <Stack.Screen
+                        name="Repertoire"
+                        component={RepertoireScreen}
+                        options={{
+                            title: 'Repertoire',
+                            headerStyle: {
+                                backgroundColor: 'rgb(26, 28, 30)',
+                            }
+                        }}
+                    />
                 </>}
-            <Stack.Screen
-                name="Repertoire"
-                component={RepertoireScreen}
-                options={{
-                    title: 'Repertoire',
-                    headerStyle: {
-                        backgroundColor: 'rgb(26, 28, 30)',
-                    }
-                }}
-            />
-            <Stack.Screen
-                name="Tickets"
-                component={TicketScreen}
-                options={{
-                    title: 'Tickets',
-                    headerStyle: {
-                        backgroundColor: 'rgb(26, 28, 30)',
-                    }
-                }}
-            />
+
         </Drawer.Navigator>
     );
 }
