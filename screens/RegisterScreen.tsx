@@ -1,11 +1,13 @@
 import React from "react";
-import { SafeAreaView, StyleSheet } from 'react-native';
-import { Button, TextInput, Text } from 'react-native-paper';
+import {SafeAreaView, StyleSheet, View} from 'react-native';
+import {Button, TextInput, Text, useTheme} from 'react-native-paper';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../firebaseConfig";
 import { ref, set } from "firebase/database";
 
 export default function RegisterScreen({ navigation }: any) {
+
+    const theme = useTheme()
 
     const [login, onChangeLogin] = React.useState<string>('');
     const [email, onChangeEmail] = React.useState<string>('');
@@ -17,7 +19,7 @@ export default function RegisterScreen({ navigation }: any) {
             .then(() => {
                 onChangeEmail('');
                 onChangePassword('');
-                navigation.navigate('Home');
+                navigation.navigate('Repertoire');
             })
             .catch(error => {
                 if (error.code === 'auth/email-already-in-use') {
@@ -34,37 +36,39 @@ export default function RegisterScreen({ navigation }: any) {
     }
 
     return (
-        <SafeAreaView style={styles.container}>
-            <Text style={{textAlign: "center"}} variant="headlineSmall">Register new account</Text>
-            <TextInput
-                style={styles.input}
-                label="Login"
-                mode="outlined"
-                onChangeText={onChangeLogin}
-                value={login}
-            />
-            <TextInput
-                style={styles.input}
-                label="Email"
-                mode="outlined"
-                onChangeText={onChangeEmail}
-                value={email}
-            />
-            <TextInput
-                style={styles.input}
-                label="Password"
-                mode="outlined"
-                secureTextEntry={true}
-                onChangeText={onChangePassword}
-                value={password}
-            />
-            <Button
-                style={{marginTop: 20}}
-                mode="elevated"
-                onPress={handleSubmit}>
-                Register
-            </Button>
-            {error !== '' ? <Text>{error !== ""}</Text>: null}
+        <SafeAreaView  style={[styles.container ,{ backgroundColor: theme.colors.background}]}>
+            <View style={{backgroundColor: theme.colors.secondaryContainer, padding: 40, borderRadius: 30, marginTop: 40}}>
+                <Text style={{textAlign: "center", color: theme.colors.onSecondaryContainer}} variant="headlineSmall">Register new account</Text>
+                <TextInput
+                    style={styles.input}
+                    label="Login"
+                    mode="outlined"
+                    onChangeText={onChangeLogin}
+                    value={login}
+                />
+                <TextInput
+                    style={styles.input}
+                    label="Email"
+                    mode="outlined"
+                    onChangeText={onChangeEmail}
+                    value={email}
+                />
+                <TextInput
+                    style={styles.input}
+                    label="Password"
+                    mode="outlined"
+                    secureTextEntry={true}
+                    onChangeText={onChangePassword}
+                    value={password}
+                />
+                <Button
+                    style={{marginTop: 20}}
+                    mode="elevated"
+                    onPress={handleSubmit}>
+                    Register
+                </Button>
+                {error !== '' ? <Text>{error !== ""}</Text>: null}
+            </View>
         </SafeAreaView>
     );
 }
